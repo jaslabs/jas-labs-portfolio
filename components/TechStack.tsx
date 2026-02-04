@@ -1,7 +1,7 @@
 import React from 'react';
 
 const techs = [
-  "React", "TypeScript", "Node.js", "Python", "TensorFlow", "AWS", "Docker", "Kubernetes", "GraphQL", "PostgreSQL", "Rust", "Go"
+  "Flutter", "React", "TypeScript", "Node.js", "Python", "LLM Integration", "TensorFlow", "AWS", "Docker", "Kubernetes", "GraphQL", "PostgreSQL", "MongoDB", "Geoserver", "Rust", "Go"
 ];
 
 const TechStack: React.FC = () => {
@@ -24,7 +24,7 @@ const TechStack: React.FC = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Add custom CSS for marquee in a style block if strictly needed or rely on tailwind config if we could add it there. 
           For this single-file output constraint, inline style block within the component is safest for keyframes 
           that might not be in the global index.html config 
