@@ -16,6 +16,13 @@ const Contact: React.FC = () => {
     setError(false);
     setSuccess(false);
 
+    // Debugging: Check if keys are loaded (remove this in final production)
+    console.log("EmailJS Config Status:", {
+      ServiceId: import.meta.env.VITE_EMAILJS_SERVICE_ID ? "Loaded" : "Missing",
+      TemplateId: import.meta.env.VITE_EMAILJS_TEMPLATE_ID ? "Loaded" : "Missing",
+      PublicKey: import.meta.env.VITE_EMAILJS_PUBLIC_KEY ? "Loaded" : "Missing",
+    });
+
     if (formRef.current) {
       // Create a hidden input for the selected type so EmailJS can grab it if needed
       // Alternatively, we can append it or rely on the form template logic
