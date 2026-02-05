@@ -31,10 +31,10 @@ const TechStack: React.FC = () => {
       */}
       <style>{`
         .animate-marquee {
-          animation: marquee 50s linear infinite;
+          animation: marquee 80s linear infinite;
         }
         .animate-marquee2 {
-          animation: marquee2 50s linear infinite;
+          animation: marquee2 80s linear infinite;
         }
         @keyframes marquee {
           0% { transform: translateX(0%); }

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Button from './Button';
-import { Rocket, Zap } from 'lucide-react';
+import { } from 'lucide-react';
 
 const Hero: React.FC = () => {
   return (
@@ -11,24 +11,17 @@ const Hero: React.FC = () => {
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob" />
         <div className="absolute top-0 right-1/4 w-[500px] h-[500px] bg-teal-500/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-2000" />
         <div className="absolute -bottom-32 left-1/3 w-[500px] h-[500px] bg-purple-500/20 rounded-full mix-blend-screen filter blur-[100px] animate-blob animation-delay-4000" />
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20"></div>
+
       </div>
 
       <div className="container mx-auto px-6 relative z-10 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="inline-block mb-6 px-4 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-950/20 backdrop-blur-md"
-        >
-          <span className="text-cyan-400 text-xs font-bold tracking-widest uppercase">Software Engineering Firm</span>
-        </motion.div>
+
 
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.2 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8"
+          className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 mt-20"
         >
           Crafting the <br />
           <span className="text-gradient">Future of Software</span>
@@ -50,29 +43,22 @@ const Hero: React.FC = () => {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="flex flex-col sm:flex-row items-center justify-center gap-6"
         >
-          <a href="#work">
-            <Button variant="secondary">View Projects</Button>
-          </a>
-          <a href="#contact">
-            <Button icon>Get in Touch</Button>
-          </a>
+          <Button
+            variant="secondary"
+            onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            View Projects
+          </Button>
+          <Button
+            icon
+            onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            Get in Touch
+          </Button>
         </motion.div>
 
         {/* Floating Decorative Elements */}
-        <motion.div
-          animate={{ y: [0, -20, 0] }}
-          transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-1/2 -right-12 md:right-20 w-24 h-24 glass-card rounded-2xl flex items-center justify-center hidden lg:flex"
-        >
-          <Rocket className="w-10 h-10 text-cyan-400" />
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 20, 0] }}
-          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute bottom-20 -left-12 md:left-20 w-32 h-32 glass-card rounded-2xl flex items-center justify-center hidden lg:flex"
-        >
-          <Zap className="w-12 h-12 text-teal-400" />
-        </motion.div>
+
       </div>
     </section>
   );

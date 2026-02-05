@@ -45,9 +45,9 @@ const Footer: React.FC = () => {
             © {new Date().getFullYear()} JAS Labs. All rights reserved.
           </p>
           <div className="flex items-center gap-6">
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
-            <a href="#" className="text-slate-400 hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
+            <a href="https://github.com/JAS-Labs" className="text-slate-400 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
+            <a href="https://linkedin.com/JAS-Labs" className="text-slate-400 hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
+            <a href="https://twitter.com/JAS_Labs" className="text-slate-400 hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
           </div>
         </div>
       </div>

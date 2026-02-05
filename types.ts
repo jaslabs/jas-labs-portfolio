@@ -1,3 +1,4 @@
+
 export interface Service {
   id: string;
   title: string;
@@ -10,6 +11,7 @@ export interface Project {
   title: string;
   category: string;
   image: string;
+  images: string[];
   problem: string;
   solution: string;
   result: string;
