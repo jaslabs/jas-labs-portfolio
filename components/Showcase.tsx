@@ -1,16 +1,17 @@
 import React from 'react';
 import { Project } from '../types';
 import { ArrowUpRight } from 'lucide-react';
+import webGisImage from '../images/webgis-dims.png';
 
 const projects: Project[] = [
   {
     id: '1',
-    title: 'FinTech Dashboard',
-    category: 'Web Application',
-    image: 'https://picsum.photos/seed/fintech/800/600',
-    problem: 'Legacy system latency causing 40% user churn.',
-    solution: 'Re-engineered with React & Go for real-time socket connections.',
-    result: '+200% Speed Improvement'
+    title: 'Web GIS Data Management System',
+    category: 'Web GIS Application',
+    image: webGisImage,
+    problem: 'Legacy E&P systems suffered from high latency.',
+    solution: 'Re-engineered with React, Fast API & GeoServer for real-time spatial data streaming and visualization.',
+    result: '+200% Data Retrieval Speed'
   },
   {
     id: '2',
@@ -34,7 +35,7 @@ const projects: Project[] = [
 
 const Showcase: React.FC = () => {
   return (
-    <section id="work" className="py-24 bg-navy-800/50">
+    <section id="work" className="py-32 bg-navy-800/50">
       <div className="container mx-auto px-6">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div>
@@ -53,9 +54,9 @@ const Showcase: React.FC = () => {
             <div key={project.id} className="group cursor-pointer">
               <div className="relative overflow-hidden rounded-2xl mb-6 aspect-[4/3]">
                 <div className="absolute inset-0 bg-gradient-to-t from-navy-900 via-transparent to-transparent opacity-60 z-10" />
-                <img 
-                  src={project.image} 
-                  alt={project.title} 
+                <img
+                  src={project.image}
+                  alt={project.title}
                   className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700 ease-out"
                 />
                 <div className="absolute top-4 left-4 z-20">
@@ -64,7 +65,7 @@ const Showcase: React.FC = () => {
                   </span>
                 </div>
               </div>
-              
+
               <h3 className="text-2xl font-bold mb-4 group-hover:text-cyan-400 transition-colors flex items-center gap-3">
                 {project.title}
               </h3>

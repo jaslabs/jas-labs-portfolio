@@ -15,7 +15,7 @@ const team = [
         color: 'from-blue-500 to-indigo-500',
         description: 'Expert in crafting high-performance cross-platform mobile experiences with Flutter.',
         github: 'https://github.com/Jahidul007',
-        linkedin: 'https://www.linkedin.com/in/jahidul-islam-43/',
+        linkedin: 'https://www.linkedin.com/in/jahidul007/',
         twitter: 'https://twitter.com/Jahidul-Islam'
     },
     {
@@ -27,7 +27,7 @@ const team = [
         color: 'from-orange-500 to-red-500',
         description: 'Building robust and scalable web applications with .NET and modern frameworks.',
         github: 'https://github.com/mdabdullahfaruque',
-        linkedin: 'https://www.linkedin.com/in/md-abdullah-faruque-43/',
+        linkedin: 'https://www.linkedin.com/in/mdabdullahfaruque/',
         twitter: 'https://twitter.com/ArmanAbdullah'
     },
     {
@@ -46,7 +46,7 @@ const team = [
 
 const Team: React.FC = () => {
     return (
-        <section id="team" className="py-20 bg-navy-900 relative overflow-hidden">
+        <section id="team" className="py-32 bg-navy-900 relative overflow-hidden">
             {/* Background Elements */}
             <div className="absolute top-0 right-0 w-1/3 h-1/3 bg-cyan-500/10 rounded-full blur-3xl opacity-30" />
             <div className="absolute bottom-0 left-0 w-1/3 h-1/3 bg-purple-500/10 rounded-full blur-3xl opacity-30" />

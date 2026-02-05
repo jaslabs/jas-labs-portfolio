@@ -15,7 +15,7 @@ const App: React.FC = () => {
     <div className="bg-navy-900 min-h-screen text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans">
       <Header />
       <Hero />
-      <main className="max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 border-x border-white/5">
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8">
         <TechStack />
         <Philosophy />
         <Services />
