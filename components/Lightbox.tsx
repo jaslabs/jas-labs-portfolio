@@ -1,106 +1,143 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { createPortal } from 'react-dom';
+import { AnimatePresence, motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface LightboxProps {
-    isOpen: boolean;
     images: string[];
-    currentIndex: number;
+    index: number | null;
     title?: string;
     onClose: () => void;
-    onNext: () => void;
-    onPrev: () => void;
+    onNavigate: (nextIndex: number) => void;
 }
 
-const Lightbox: React.FC<LightboxProps> = ({
-    isOpen,
-    images,
-    currentIndex,
-    title,
-    onClose,
-    onNext,
-    onPrev
-}) => {
-    // Handle keyboard navigation
+const Lightbox: React.FC<LightboxProps> = ({ images, index, title, onClose, onNavigate }) => {
+    const isOpen = index !== null;
+
+    const step = useCallback(
+        (delta: number) => {
+            if (index === null || images.length === 0) return;
+            onNavigate((index + delta + images.length) % images.length);
+        },
+        [index, images.length, onNavigate],
+    );
+
     useEffect(() => {
-        const handleKeyDown = (e: KeyboardEvent) => {
-            if (!isOpen) return;
+        if (!isOpen) return;
+
+        const onKeyDown = (e: KeyboardEvent) => {
             if (e.key === 'Escape') onClose();
-            if (e.key === 'ArrowRight') onNext();
-            if (e.key === 'ArrowLeft') onPrev();
+            if (e.key === 'ArrowRight') step(1);
+            if (e.key === 'ArrowLeft') step(-1);
         };
 
-        window.addEventListener('keydown', handleKeyDown);
-        return () => window.removeEventListener('keydown', handleKeyDown);
-    }, [isOpen, onClose, onNext, onPrev]);
+        const { overflow } = document.body.style;
+        document.body.style.overflow = 'hidden';
+        window.addEventListener('keydown', onKeyDown);
 
-    if (!isOpen) return null;
+        return () => {
+            document.body.style.overflow = overflow;
+            window.removeEventListener('keydown', onKeyDown);
+        };
+    }, [isOpen, onClose, step]);
 
-    return (
+    return createPortal(
         <AnimatePresence>
-            <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 backdrop-blur-sm"
-                onClick={onClose}
-            >
-                {/* Close Button */}
-                <button
+            {isOpen && (
+                <motion.div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-label={title ?? 'Image viewer'}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.2 }}
                     onClick={onClose}
-                    className="absolute top-6 right-6 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors z-50"
-                    aria-label="Close lightbox"
+                    className="fixed inset-0 z-[100] flex flex-col bg-ink-950/95 backdrop-blur-md"
                 >
-                    <X className="w-8 h-8" />
-                </button>
-
-                {/* Project Name */}
-                {title && (
-                    <div className="absolute top-6 left-6 z-50">
-                        <h3 className="text-sm md:text-sm font-bold text-white tracking-tight">{title}</h3>
+                    <div className="flex shrink-0 items-center justify-between gap-4 border-b border-ink-800 px-5 py-4">
+                        <div className="min-w-0">
+                            {title && (
+                                <p className="truncate font-display text-sm font-medium text-ink-50">{title}</p>
+                            )}
+                            <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-ink-400">
+                                {String((index ?? 0) + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
+                            </p>
+                        </div>
+                        <button
+                            onClick={onClose}
+                            aria-label="Close viewer"
+                            className="flex h-10 w-10 items-center justify-center rounded-full border border-ink-700 text-ink-200 transition-colors hover:border-acid-500 hover:text-acid-400"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
                     </div>
-                )}
 
-                {/* Main Content */}
-                <div
-                    className="relative w-full h-full flex items-center justify-center p-4 md:p-12"
-                    onClick={(e) => e.stopPropagation()}
-                >
-                    <motion.img
-                        key={currentIndex}
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                        src={images[currentIndex]}
-                        alt={`Project view ${currentIndex + 1}`}
-                        className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
-                    />
+                    <div className="relative flex flex-1 items-center justify-center overflow-hidden p-4 sm:p-10">
+                        <AnimatePresence mode="wait">
+                            <motion.img
+                                key={index}
+                                src={images[index ?? 0]}
+                                alt={title ? `${title} — screen ${(index ?? 0) + 1}` : `Screen ${(index ?? 0) + 1}`}
+                                onClick={(e) => e.stopPropagation()}
+                                initial={{ opacity: 0, scale: 0.985 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.985 }}
+                                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                                className="max-h-full max-w-full rounded-lg border border-ink-700 object-contain shadow-2xl"
+                            />
+                        </AnimatePresence>
 
-                    {/* Navigation Buttons */}
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onPrev(); }}
-                        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white hover:bg-black/50 rounded-full transition-all"
-                        aria-label="Previous image"
-                    >
-                        <ChevronLeft className="w-8 h-8 md:w-12 md:h-12" />
-                    </button>
-
-                    <button
-                        onClick={(e) => { e.stopPropagation(); onNext(); }}
-                        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 p-3 text-white/70 hover:text-white hover:bg-black/50 rounded-full transition-all"
-                        aria-label="Next image"
-                    >
-                        <ChevronRight className="w-8 h-8 md:w-12 md:h-12" />
-                    </button>
-
-                    {/* Image Counter */}
-                    <div className="absolute bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/60 rounded-full text-white text-sm font-medium tracking-widest backdrop-blur-md border border-white/10">
-                        {currentIndex + 1} / {images.length}
+                        {images.length > 1 && (
+                            <>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        step(-1);
+                                    }}
+                                    aria-label="Previous image"
+                                    className="absolute left-3 flex h-11 w-11 items-center justify-center rounded-full border border-ink-700 bg-ink-900/80 text-ink-200 transition-colors hover:border-acid-500 hover:text-acid-400 sm:left-6"
+                                >
+                                    <ChevronLeft className="h-5 w-5" />
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        step(1);
+                                    }}
+                                    aria-label="Next image"
+                                    className="absolute right-3 flex h-11 w-11 items-center justify-center rounded-full border border-ink-700 bg-ink-900/80 text-ink-200 transition-colors hover:border-acid-500 hover:text-acid-400 sm:right-6"
+                                >
+                                    <ChevronRight className="h-5 w-5" />
+                                </button>
+                            </>
+                        )}
                     </div>
-                </div>
-            </motion.div>
-        </AnimatePresence>
+
+                    {images.length > 1 && (
+                        <div
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex shrink-0 items-center justify-center gap-2 border-t border-ink-800 px-5 py-4"
+                        >
+                            {images.map((src, i) => (
+                                <button
+                                    key={src}
+                                    onClick={() => onNavigate(i)}
+                                    aria-label={`Go to image ${i + 1}`}
+                                    className={`h-12 w-16 overflow-hidden rounded border transition-all ${i === index
+                                        ? 'border-acid-500 opacity-100'
+                                        : 'border-ink-700 opacity-45 hover:opacity-80'
+                                        }`}
+                                >
+                                    <img src={src} alt="" className="h-full w-full object-cover" />
+                                </button>
+                            ))}
+                        </div>
+                    )}
+                </motion.div>
+            )}
+        </AnimatePresence>,
+        document.body,
     );
 };
 

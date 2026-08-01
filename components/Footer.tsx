@@ -1,54 +1,144 @@
 import React from 'react';
-import { Terminal, Github, Linkedin, Twitter } from 'lucide-react';
+import { Github, Linkedin, Twitter } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { capabilities, navItems, site } from '../data/site';
+import Logo from './Logo';
 
 const Footer: React.FC = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const goTo = (e: React.MouseEvent, href: string) => {
+    e.preventDefault();
+    const scrollToTarget = () => {
+      if (href === '#') {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+    };
+
+    if (location.pathname !== '/') {
+      navigate('/');
+      window.setTimeout(scrollToTarget, 120);
+    } else {
+      scrollToTarget();
+    }
+  };
+
+  const socials = [
+    { href: site.github, Icon: Github, label: 'GitHub' },
+    { href: site.linkedin, Icon: Linkedin, label: 'LinkedIn' },
+    { href: site.twitter, Icon: Twitter, label: 'Twitter' },
+  ];
+
   return (
-    <footer className="border-t border-white/5 bg-navy-900 pt-20 pb-10">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-start gap-12 mb-16">
+    <footer className="relative overflow-hidden border-t border-ink-800 bg-ink-950">
+      <div className="mx-auto max-w-container px-5 pt-16 sm:px-8">
+        <div className="grid gap-12 pb-14 lg:grid-cols-[1.4fr_1fr_1fr_1fr]">
           <div>
-            <a href="#" className="flex items-center gap-2 text-2xl font-bold tracking-tighter mb-6">
-              <div className="p-2 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-lg">
-                <Terminal className="w-6 h-6 text-black" />
-              </div>
-              <span className="text-white">JAS <span className="text-cyan-400">LABS</span></span>
-            </a>
-            <p className="text-slate-400 max-w-xs">
-              Engineering the digital future with precision, scalability, and deep technical expertise.
+            <Logo onClick={(e) => goTo(e, '#')} />
+            <p className="mt-5 max-w-xs text-[15px] leading-relaxed text-ink-400">
+              {site.shortPitch} Geospatial platforms, cross-platform apps and applied NLP — built
+              and handed over in full.
             </p>
+            <a
+              href={`mailto:${site.email}`}
+              className="mt-6 inline-block font-mono text-sm text-ink-200 underline decoration-ink-600 underline-offset-4 transition-colors hover:text-acid-400 hover:decoration-acid-500"
+            >
+              {site.email}
+            </a>
           </div>
 
-          <div className="flex flex-wrap gap-16">
-            <div>
-              <h4 className="text-white font-bold mb-6">Services</h4>
-              <ul className="space-y-4 text-slate-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Web Development</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Mobile Engineering</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Machine Learning</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Cloud Architecture</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="text-white font-bold mb-6">Company</h4>
-              <ul className="space-y-4 text-slate-400">
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Careers</a></li>
-                <li><a href="#" className="hover:text-cyan-400 transition-colors">Blog</a></li>
-                <li><a href="#contact" className="hover:text-cyan-400 transition-colors">Contact</a></li>
-              </ul>
+          <div>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-500">Studio</h4>
+            <ul className="mt-5 space-y-3">
+              {navItems.map((item) => (
+                <li key={item.label}>
+                  <a
+                    href={item.href}
+                    onClick={(e) => goTo(e, item.href)}
+                    className="text-[15px] text-ink-300 transition-colors hover:text-acid-400"
+                  >
+                    {item.label}
+                  </a>
+                </li>
+              ))}
+              <li>
+                <Link
+                  to="/projects"
+                  className="text-[15px] text-ink-300 transition-colors hover:text-acid-400"
+                >
+                  All projects
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-500">
+              Capabilities
+            </h4>
+            <ul className="mt-5 space-y-3">
+              {capabilities.slice(0, 5).map((capability) => (
+                <li key={capability.id}>
+                  <a
+                    href="#capabilities"
+                    onClick={(e) => goTo(e, '#capabilities')}
+                    className="text-[15px] text-ink-300 transition-colors hover:text-acid-400"
+                  >
+                    {capability.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <h4 className="font-mono text-[10px] uppercase tracking-[0.2em] text-ink-500">
+              Contact
+            </h4>
+            <ul className="mt-5 space-y-3 text-[15px] text-ink-300">
+              <li>{site.location}</li>
+              <li>{site.timezone}</li>
+              <li>
+                <a href={`tel:${site.phone.replace(/\s/g, '')}`} className="transition-colors hover:text-acid-400">
+                  {site.phone}
+                </a>
+              </li>
+            </ul>
+
+            <div className="mt-6 flex items-center gap-2">
+              {socials.map(({ href, Icon, label }) => (
+                <a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-lg border border-ink-800 text-ink-400 transition-colors hover:border-acid-500/50 hover:text-acid-500"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
             </div>
           </div>
         </div>
 
-        <div className="flex flex-col md:flex-row items-center justify-between pt-8 border-t border-white/5">
-          <p className="text-slate-500 text-sm mb-4 md:mb-0">
-            © {new Date().getFullYear()} JAS Labs. All rights reserved.
+        {/* Oversized wordmark */}
+        <div className="relative select-none border-t border-ink-800 pt-10">
+          <p className="bg-gradient-to-b from-ink-800 to-ink-950 bg-clip-text text-center font-display text-[19vw] font-semibold leading-[0.8] tracking-tighter text-transparent lg:text-[13rem]">
+            JAS LABS
           </p>
-          <div className="flex items-center gap-6">
-            <a href="https://github.com/JAS-Labs" className="text-slate-400 hover:text-white transition-colors"><Github className="w-5 h-5" /></a>
-            <a href="https://linkedin.com/JAS-Labs" className="text-slate-400 hover:text-white transition-colors"><Linkedin className="w-5 h-5" /></a>
-            <a href="https://twitter.com/JAS_Labs" className="text-slate-400 hover:text-white transition-colors"><Twitter className="w-5 h-5" /></a>
-          </div>
+        </div>
+
+        <div className="flex flex-col items-center justify-between gap-3 border-t border-ink-800 py-6 sm:flex-row">
+          <p className="font-mono text-[11px] text-ink-500">
+            © {new Date().getFullYear()} {site.name}. All rights reserved.
+          </p>
+          <p className="font-mono text-[11px] text-ink-600">
+            Built in Dhaka · React · TypeScript · Vite
+          </p>
         </div>
       </div>
     </footer>

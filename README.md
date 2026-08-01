@@ -1,71 +1,80 @@
 # JAS Labs
 
-**Premium Software Engineering Firm**
+**Engineering studio for data-heavy software.**
 
-> We are a team of elite software engineers building scalable architectures, innovative mobile experiences, and data-driven ML solutions for forward-thinking enterprises.
+> A three-person studio building geospatial platforms, cross-platform apps and applied NLP
+> systems — from schema design through to production deploy.
 
-Created with React, TypeScript, Vite, and Tailwind CSS.
+Source for the JAS Labs portfolio site.
 
-## 🚀 Projects
+## Tech Stack
 
-This repository contains the source code for the JAS Labs portfolio website.
-
-## 🛠️ Tech Stack
-
-- **Framework**: [React](https://react.dev/)
+- **Framework**: [React 19](https://react.dev/) + [React Router](https://reactrouter.com/)
 - **Build Tool**: [Vite](https://vitejs.dev/)
 - **Language**: [TypeScript](https://www.typescriptlang.org/)
-- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/) (CDN build, config in `index.html`)
+- **Animation**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide](https://lucide.dev/)
+- **Contact form**: [EmailJS](https://www.emailjs.com/)
 
-## 🏃‍♂️ Run Locally
+## Project structure
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/YOUR_USERNAME/jaslabs.git
-   cd jaslabs
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Set up environment variables**
-   Create a `.env.local` file in the root directory and add your keys if necessary:
-   ```env
-   VITE_GEMINI_API_KEY=your_api_key_here
-   ```
-
-4. **Start the development server**
-   ```bash
-   npm run dev
-   ```
-
-## 📦 Build for Production
-
-To create a production build:
-
-```bash
-npm run build
+```
+App.tsx                 Routes + page composition
+index.html              Tailwind theme tokens (colors, fonts, keyframes)
+index.css               Base styles, grid/mask utilities, scrollbar
+data/site.ts            All studio copy: nav, capabilities, stack, process, team
+data/projects.ts        Project records (the source of truth for both /  and /projects)
+components/             Section components + primitives (Button, SectionHeading, Lightbox)
+pages/ProjectsPage.tsx  Filterable project index
 ```
 
-Previews the production build locally:
+Content lives in `data/`. To change what the site says, edit those two files — the
+components render whatever is there.
+
+## Design tokens
+
+Defined in the Tailwind config block in `index.html`:
+
+| Token           | Use                                             |
+| --------------- | ----------------------------------------------- |
+| `ink-950 … 50`  | Background through to primary text (dark theme) |
+| `acid-300 … 700`| Single accent — signals, focus, active states    |
+| `font-display`  | Inter Tight — headings                          |
+| `font-sans`     | Inter — body                                     |
+| `font-mono`     | JetBrains Mono — labels, metadata, buttons       |
+
+## Run locally
 
 ```bash
-npm run preview
+npm install
+npm run dev
 ```
 
-## 🚀 Deployment
+### Environment variables
 
-This project is configured for automated deployment to **GitHub Pages** using GitHub Actions.
+The contact form posts through EmailJS. Create `.env.local`:
 
-1. Push changes to the `main` branch.
-2. The GitHub Action in `.github/workflows/deploy.yml` will automatically build and deploy the site.
-3. Ensure your `vite.config.ts` has the correct `base` URL set (e.g., `/jaslabs/`).
-4. Enable GitHub Actions as the source in your repository settings under **Settings > Pages**.
+```env
+VITE_EMAILJS_SERVICE_ID=your_service_id
+VITE_EMAILJS_TEMPLATE_ID=your_template_id
+VITE_EMAILJS_PUBLIC_KEY=your_public_key
+```
 
-## 📄 License
+The template must accept `user_name`, `user_email`, `project_type` and `message`.
+
+## Build
+
+```bash
+npm run build     # production build to dist/
+npm run preview   # serve the build locally
+```
+
+## Deployment
+
+Deployed to **GitHub Pages** via GitHub Actions on push to `main`. The `base` in
+`vite.config.ts` must match the repository name (`/jas-labs-portfolio/`).
+
+## License
 
 All rights reserved.

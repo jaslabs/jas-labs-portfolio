@@ -1,127 +1,159 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X, Terminal } from 'lucide-react';
-import { NavItem } from '../types';
-import { useLocation, useNavigate } from 'react-router-dom';
-
-const navItems: NavItem[] = [
-  { label: 'Services', href: '#services' },
-  { label: 'Work', href: '#work' },
-  { label: 'Team', href: '#team' },
-  { label: 'Process', href: '#process' },
-
-];
+import React, { useCallback, useEffect, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { navItems } from '../data/site';
+import { LinkButton } from './Button';
+import Logo from './Logo';
 
 const Header: React.FC = () => {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const handleNavClick = (e: React.MouseEvent, href: string) => {
-    e.preventDefault();
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? 'hidden' : '';
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [menuOpen]);
 
-    // Handle Logo click (scroll to top)
-    if (href === '#') {
+  const goTo = useCallback(
+    (e: React.MouseEvent, href: string) => {
+      e.preventDefault();
+      setMenuOpen(false);
+
+      const scrollToTarget = () => {
+        if (href === '#') {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+          return;
+        }
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth' });
+      };
+
       if (location.pathname !== '/') {
         navigate('/');
-        window.scrollTo(0, 0);
+        window.setTimeout(scrollToTarget, 120);
       } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        scrollToTarget();
       }
-      setIsMobileMenuOpen(false);
-      return;
-    }
-
-    // Handle section links
-    if (location.pathname !== '/') {
-      navigate('/');
-      // Wait for navigation then scroll
-      setTimeout(() => {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      }, 100);
-    } else {
-      const element = document.querySelector(href);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth' });
-      }
-    }
-    setIsMobileMenuOpen(false);
-  };
+    },
+    [location.pathname, navigate],
+  );
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'py-4 glass border-b border-white/5' : 'py-6 bg-transparent'
-        }`}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        <a
-          href="#"
-          onClick={(e) => handleNavClick(e, '#')}
-          className="flex items-center gap-2 text-2xl font-bold tracking-tighter"
-        >
-          <div className="p-2 bg-gradient-to-br from-cyan-500 to-teal-500 rounded-lg">
-            <Terminal className="w-6 h-6 text-black" />
+    <>
+      <header
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${scrolled || menuOpen
+          ? 'border-b border-ink-800 bg-ink-950/85 backdrop-blur-xl'
+          : 'border-b border-transparent'
+          }`}
+      >
+        <div className="mx-auto flex h-16 max-w-container items-center justify-between px-5 sm:px-8 lg:h-[72px]">
+          <Logo onClick={(e) => goTo(e, '#')} />
+
+          <nav className="hidden items-center gap-1 lg:flex">
+            {navItems.map((item) => (
+              <a
+                key={item.label}
+                href={item.href}
+                onClick={(e) => goTo(e, item.href)}
+                className="rounded-full px-4 py-2 text-sm text-ink-300 transition-colors hover:bg-ink-900 hover:text-ink-50"
+              >
+                {item.label}
+              </a>
+            ))}
+            <Link
+              to="/projects"
+              className="rounded-full px-4 py-2 text-sm text-ink-300 transition-colors hover:bg-ink-900 hover:text-ink-50"
+            >
+              Projects
+            </Link>
+          </nav>
+
+          <div className="flex items-center gap-3">
+            <LinkButton
+              href="#contact"
+              onClick={(e) => goTo(e, '#contact')}
+              variant="ghost"
+              className="hidden sm:inline-flex"
+            >
+              Start a project
+              <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+            </LinkButton>
+            <button
+              onClick={() => setMenuOpen((v) => !v)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+              className="flex h-10 w-10 items-center justify-center rounded-lg border border-ink-700 text-ink-100 transition-colors hover:border-acid-500 hover:text-acid-400 lg:hidden"
+            >
+              {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
-          <span className="text-white">JAS <span className="text-cyan-400">LABS</span></span>
-        </a>
-
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={(e) => handleNavClick(e, item.href)}
-              className="text-sm font-medium text-slate-300 hover:text-cyan-400 transition-colors uppercase tracking-widest cursor-pointer"
-            >
-              {item.label}
-            </a>
-          ))}
-          <a
-            href="#contact"
-            onClick={(e) => handleNavClick(e, '#contact')}
-            className="px-5 py-2 rounded-full border border-cyan-500/30 text-cyan-400 text-sm font-medium hover:bg-cyan-950/30 transition-all hover:border-cyan-400 cursor-pointer"
-          >
-            Start a Project
-          </a>
-        </nav>
-
-        {/* Mobile Toggle */}
-        <button
-          className="md:hidden text-white p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-        >
-          {isMobileMenuOpen ? <X /> : <Menu />}
-        </button>
-      </div>
-
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="absolute top-full left-0 right-0 bg-navy-900/95 backdrop-blur-xl border-b border-white/10 md:hidden p-6 flex flex-col gap-6">
-          {navItems.map((item) => (
-            <a
-              key={item.label}
-              href={item.href}
-              onClick={(e) => handleNavClick(e, item.href)}
-              className="text-lg font-medium text-slate-300 hover:text-cyan-400 transition-colors cursor-pointer"
-            >
-              {item.label}
-            </a>
-          ))}
         </div>
-      )}
-    </header>
+      </header>
+
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 top-16 z-40 bg-ink-950/98 backdrop-blur-xl lg:hidden"
+          >
+            <nav className="flex flex-col px-5 pt-4">
+              {navItems.map((item, i) => (
+                <motion.a
+                  key={item.label}
+                  href={item.href}
+                  onClick={(e) => goTo(e, item.href)}
+                  initial={{ opacity: 0, x: -12 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.04 * i, duration: 0.3 }}
+                  className="flex items-baseline gap-4 border-b border-ink-800 py-5 font-display text-2xl font-medium text-ink-50"
+                >
+                  <span className="font-mono text-xs text-acid-500">0{i + 1}</span>
+                  {item.label}
+                </motion.a>
+              ))}
+              <motion.div
+                initial={{ opacity: 0, x: -12 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.04 * navItems.length, duration: 0.3 }}
+              >
+                <Link
+                  to="/projects"
+                  onClick={() => setMenuOpen(false)}
+                  className="flex items-baseline gap-4 border-b border-ink-800 py-5 font-display text-2xl font-medium text-ink-50"
+                >
+                  <span className="font-mono text-xs text-acid-500">0{navItems.length + 1}</span>
+                  Projects
+                </Link>
+              </motion.div>
+
+              <LinkButton
+                href="#contact"
+                onClick={(e) => goTo(e, '#contact')}
+                size="lg"
+                className="mt-8 w-full"
+              >
+                Start a project
+                <ArrowUpRight className="h-4 w-4" />
+              </LinkButton>
+            </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </>
   );
 };
 

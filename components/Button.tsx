@@ -1,31 +1,57 @@
 import React from 'react';
-import { ArrowRight } from 'lucide-react';
+
+type Variant = 'primary' | 'ghost' | 'quiet';
+type Size = 'md' | 'lg';
+
+const base =
+  'group inline-flex items-center justify-center gap-2 rounded-full font-mono text-[11px] font-medium uppercase tracking-[0.16em] transition-all duration-200 border select-none disabled:opacity-60 disabled:pointer-events-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950';
+
+const variants: Record<Variant, string> = {
+  primary:
+    'bg-acid-500 border-acid-500 text-ink-950 hover:bg-acid-400 hover:border-acid-400 active:bg-acid-600',
+  ghost:
+    'bg-transparent border-ink-600 text-ink-100 hover:border-acid-500 hover:text-acid-400',
+  quiet:
+    'bg-ink-800 border-ink-700 text-ink-200 hover:bg-ink-700 hover:text-ink-50',
+};
+
+const sizes: Record<Size, string> = {
+  md: 'h-10 px-5',
+  lg: 'h-12 px-7',
+};
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline';
-  icon?: boolean;
+  variant?: Variant;
+  size?: Size;
 }
 
-const Button: React.FC<ButtonProps> = ({ children, variant = 'primary', icon = false, className = '', ...props }) => {
-  const baseStyles = "px-8 py-3 rounded-full font-medium transition-all duration-300 flex items-center justify-center gap-2 group relative overflow-hidden";
-  
-  const variants = {
-    primary: "bg-cyan-500 text-black hover:bg-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.3)] hover:shadow-[0_0_30px_rgba(6,182,212,0.5)]",
-    secondary: "glass text-white hover:bg-white/10 border border-white/10",
-    outline: "border border-cyan-500/50 text-cyan-400 hover:bg-cyan-950/30"
-  };
+export const Button: React.FC<ButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  ...props
+}) => (
+  <button className={`${base} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
+    {children}
+  </button>
+);
 
-  return (
-    <button className={`${baseStyles} ${variants[variant]} ${className}`} {...props}>
-      <span className="relative z-10 flex items-center gap-2">
-        {children}
-        {icon && <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
-      </span>
-      {variant === 'primary' && (
-         <div className="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 group-hover:scale-100 group-hover:bg-cyan-400/20" />
-      )}
-    </button>
-  );
-};
+interface LinkButtonProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  variant?: Variant;
+  size?: Size;
+}
+
+export const LinkButton: React.FC<LinkButtonProps> = ({
+  children,
+  variant = 'primary',
+  size = 'md',
+  className = '',
+  ...props
+}) => (
+  <a className={`${base} ${variants[variant]} ${sizes[size]} ${className}`} {...props}>
+    {children}
+  </a>
+);
 
 export default Button;
