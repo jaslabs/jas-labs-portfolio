@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { ArrowUpRight, Menu, X } from 'lucide-react';
+import { ArrowUpRight, Menu, Moon, Sun, X } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { navItems } from '../data/site';
 import { LinkButton } from './Button';
@@ -9,8 +9,23 @@ import Logo from './Logo';
 const Header: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() =>
+    document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light',
+  );
   const location = useLocation();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute(
+      'content', theme === 'dark' ? '#07080a' : '#ffffff',
+    );
+    try {
+      localStorage.setItem('jas-labs-theme', theme);
+    } catch {
+      // Theme switching still works when browser storage is unavailable.
+    }
+  }, [theme]);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -80,6 +95,15 @@ const Header: React.FC = () => {
           </nav>
 
           <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setTheme((value) => value === 'light' ? 'dark' : 'light')}
+              aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+              title={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-ink-700 text-ink-200 transition-colors hover:border-acid-500 hover:text-acid-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-acid-500 focus-visible:ring-offset-2 focus-visible:ring-offset-ink-950"
+            >
+              {theme === 'light' ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+            </button>
             <LinkButton
               href="#contact"
               onClick={(e) => goTo(e, '#contact')}
