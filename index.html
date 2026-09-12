@@ -7,7 +7,16 @@
   <title>JAS Labs — Engineering studio for data-heavy software</title>
   <meta name="description"
     content="JAS Labs is a small engineering studio building geospatial platforms, cross-platform apps and applied NLP systems — from schema design to production deploy." />
-  <meta name="theme-color" content="#07080A" />
+  <meta name="theme-color" content="#ffffff" />
+  <script>
+    try {
+      const theme = localStorage.getItem('jas-labs-theme') === 'dark' ? 'dark' : 'light';
+      document.documentElement.dataset.theme = theme;
+      document.querySelector('meta[name="theme-color"]').content = theme === 'dark' ? '#07080a' : '#ffffff';
+    } catch {
+      document.documentElement.dataset.theme = 'light';
+    }
+  </script>
   <!-- Google Search Console ownership verification — do not remove -->
   <meta name="google-site-verification" content="vQAbd45xYGk0juHilC0Ehz4oMsUwsj9gEkU1ugodvfw" />
 
@@ -38,25 +47,12 @@
           },
           colors: {
             ink: {
-              950: '#07080A',
-              900: '#0A0C0F',
-              850: '#0E1115',
-              800: '#12161B',
-              700: '#1B2027',
-              600: '#272E37',
-              500: '#3B444F',
-              400: '#5D6874',
-              300: '#8A95A2',
-              200: '#B8C1CB',
-              100: '#DCE1E7',
-              50: '#F2F5F8',
+              ...Object.fromEntries([950, 900, 850, 800, 700, 600, 500, 400, 300, 200, 100, 50]
+                .map(shade => [shade, `rgb(var(--ink-${shade}) / <alpha-value>)`])),
             },
             acid: {
-              300: '#E4FE9B',
-              400: '#D7FB6B',
-              500: '#C6F24E',
-              600: '#A9D92F',
-              700: '#7FA61E',
+              ...Object.fromEntries([300, 400, 500, 600, 700]
+                .map(shade => [shade, `rgb(var(--acid-${shade}) / <alpha-value>)`])),
             },
           },
           maxWidth: {
