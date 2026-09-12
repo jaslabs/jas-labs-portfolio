@@ -13,7 +13,7 @@ const SystemPanel: React.FC = () => (
     {/* glow */}
     <div className="pointer-events-none absolute -inset-6 rounded-[28px] bg-acid-500/[0.06] blur-3xl" />
 
-    <div className="relative overflow-hidden rounded-2xl border border-ink-800 bg-gradient-to-b from-ink-900 to-ink-950 shadow-2xl shadow-black/50">
+    <div className="system-panel relative overflow-hidden rounded-2xl border border-ink-800 bg-gradient-to-b from-ink-900 to-ink-950">
       {/* scan sweep */}
       <div className="pointer-events-none absolute inset-x-0 top-0 h-24 animate-sweep bg-gradient-to-b from-transparent via-acid-500/[0.05] to-transparent" />
 
